@@ -1,4 +1,6 @@
 const { Blog } = require('../models/index')
+const { SECRET } = require('../util/config')
+const jwt = require('jsonwebtoken')
 
 const blogFinder = async (req, res, next) => {
   try {
@@ -12,6 +14,20 @@ const blogFinder = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
+}
+
+const tokenExtractor = (req, res, next) => {
+  const authorization = req.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    try {
+      req.decodedToken = jwt.verify(authorization.substring(7), SECRET)
+    } catch{
+      return res.status(401).json({ error: 'token invalid' })
+    }
+  }  else {
+    return res.status(401).json({ error: 'token missing' })
+  }
+  next()
 }
 
 const errorHandler = (error, request, response, next) => {
@@ -39,8 +55,8 @@ const errorHandler = (error, request, response, next) => {
     else if (error.errors[0].type === 'Validation error')
       return response.status(400).send({ error: 'username must be a valid email address' })
   }
-  
+
   next(error)
 }
 
-module.exports = { blogFinder, errorHandler }
+module.exports = { blogFinder, errorHandler, tokenExtractor }
