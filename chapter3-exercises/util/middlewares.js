@@ -33,6 +33,13 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'request url is wrong format' })
   }
 
+  if (error.name === 'UserCreationError') {
+    if (error.errors[0].type === 'unique violation')
+      return response.status(400).send({ error: 'email is not unique' })
+    else if (error.errors[0].type === 'Validation error')
+      return response.status(400).send({ error: 'username must be a valid email address' })
+  }
+  
   next(error)
 }
 
