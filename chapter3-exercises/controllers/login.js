@@ -23,6 +23,7 @@ router.post('/', async (request, response) => {
 
   const userForToken = {
     name: user.name,
+    username: user.username,
     id: user.id,
   }
 

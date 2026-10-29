@@ -56,6 +56,10 @@ const errorHandler = (error, request, response, next) => {
       return response.status(400).send({ error: 'username must be a valid email address' })
   }
 
+  if (error.name === 'NotCorrectUserForDeletionError') {
+    return response.status(400).send({ error: 'user cannot delete this blog' })
+  }
+
   next(error)
 }
 

@@ -19,8 +19,14 @@ router.post('/', tokenExtractor, async (req, res, next) => {
   }
 })
 
-router.delete('/:id', blogFinder, async (req, res, next) => {
+router.delete('/:id', tokenExtractor, blogFinder, async (req, res, next) => {
   try {
+    const correctUser = await User.findOne({ where: { username: req.decodedToken.username } })
+    if (correctUser.id != req.blog.userId) {
+      const error = new Error()
+      error.name = 'NotCorrectUserForDeletionError'
+      throw error
+    }
     await req.blog.destroy()
     res.status(204).end()
   } catch (error) {
