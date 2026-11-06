@@ -7,8 +7,8 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env TESTING=true node --test --test-concurrency=1 tests/api_ch3.test.js",
-    "start:test": "cross-env TESTING=true node index.js",
+    "test": "TESTING=true node --test --test-concurrency=1 tests/api_ch3.test.js",
+    "start:test": "TESTING=true node index.js",
     "start": "node index"
   },
   "dependencies": {
